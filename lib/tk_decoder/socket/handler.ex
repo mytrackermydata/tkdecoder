@@ -3,6 +3,7 @@ defmodule TkDecoder.Socket.Handler do
   require Logger
 
   alias TkDecoder.{Dispatcher, Protocol}
+  alias TkDecoder.Rabbit.Publish
 
   def start_link(args, options) do
     GenServer.start_link(__MODULE__, args, options)
@@ -26,10 +27,12 @@ defmodule TkDecoder.Socket.Handler do
           :gen_tcp.send(socket, response)
           Logger.info("Protocol data: #{inspect(data)}")
           Logger.info("Response: #{response}")
+          Publish.send_data(Jason.encode!(data))
           {:noreply, %{state | device_id: device_id}}
 
         {:noreply, %Protocol{device_id: device_id} = data} ->
           Logger.info("Protocol data: #{inspect(data)}")
+          Publish.send_data(Jason.encode!(data))
           {:noreply, %{state | device_id: device_id}}
       end
     rescue

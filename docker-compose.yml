@@ -7,3 +7,14 @@ services:
     working_dir: /code
     ports:
       - 4444:4444
+    depends_on:
+      - rabbit
+
+  rabbit:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_VHOST: /
+      RABBITMQ_DEFAULT_USER: tkdecoder
+      RABBITMQ_DEFAULT_PASS: tkdecoder
+    ports:
+      - "15679:15672"

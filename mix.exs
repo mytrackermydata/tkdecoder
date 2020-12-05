@@ -19,6 +19,9 @@ defmodule TkDecoder.MixProject do
   end
 
   defp deps do
-    [{:jason, "~> 1.2"}]
+    [
+      {:jason, "~> 1.2"},
+      {:amqpx, "~> 5.3"}
+    ]
   end
 end
