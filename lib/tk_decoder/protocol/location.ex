@@ -1,6 +1,20 @@
 defmodule TkDecoder.Protocol.Location do
+  @moduledoc """
+  Location packets contains a lot of GPS informations
+
+  Those packets doesn't requires a response to keep the socket alive.
+  """
   alias TkDecoder.Protocol
 
+  @doc ~S"""
+  Parse device location data and store it into Protocol struct
+
+  ## Examples
+
+      iex> TkDecoder.Protocol.Location.decode(%Protocol{content: ["291120","160025","A","45.14321","N","13.32313","E","0.0000","214","1","08","100","70","0","50","00000000","6","1","222","10","30081","40593","160","30081","40591","147","30081","55812","142","30081","14461","138","30081","40691","137","30081","40692","135","","00"]})
+      {:noreply, %TkDecoder.Protocol{acc: nil, altitude: "1", battery: "70", content: ["1", "222", "10", "30081", "40593", "160", "30081", "40591", "147", "30081", "55812", "142", "30081", "14461", "138", "30081", "40691", "137", "30081", "40692", "135", "", "00"], content_type: nil, device: nil, device_id: nil, device_timestamp: 1606665625, direction: "214", firm: nil, gsm_signal: "100", latitude: "45.14321", latitude_mark: "N", lbs_stations: "6", lenght: nil, located: true, longitude: "13.32313", longitude_mark: "E", roll: "50", satellites: "08", speed: "0.0000", status: "00000000", steps: "0"}}
+
+  """
   def decode(data) do
     data
     |> get_date_time()

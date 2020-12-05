@@ -53,7 +53,7 @@ defmodule TkDecoder.Protocol do
         %{firm: firm, device_id: device_id},
         additional_data
       ) do
-    "#{firm}*#{device_id}*#{integer_to_hexadecimal(additional_data)}*#{additional_data}"
+    "[#{firm}*#{device_id}*#{integer_to_hexadecimal(additional_data)}*#{additional_data}]"
   end
 
   defp integer_to_hexadecimal(value) do
