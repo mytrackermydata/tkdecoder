@@ -5,7 +5,9 @@ defmodule TkDecoder.Application do
 
   def start(_type, _args) do
     children = [
-      # {TkDecoder.Socket, name: :socket}
+      {DynamicSupervisor,
+       strategy: :one_for_one, name: TkDecoder.Socket.Handler.DynamicSupervisor},
+      {Task, fn -> TkDecoder.Socket.accept(Application.fetch_env!(:tkdecoder, :socket)) end}
     ]
 
     opts = [strategy: :one_for_one, name: TkDecoder.Supervisor]
