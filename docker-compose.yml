@@ -1,0 +1,9 @@
+version: '2'
+services:
+  tkdecoder:
+    build: .
+    volumes:
+      - ".:/code"
+    working_dir: /code
+    ports:
+      - 4444:4444
