@@ -1,53 +1,35 @@
 defmodule TkDecoder.Protocol do
-  @derive Jason.Encoder
   alias TkDecoder.Protocol.{Link, Custom, Location}
 
-  defstruct [
-    :firm,
-    :device,
-    :device_id,
-    :lenght,
-    :content,
-    :content_type,
-    :steps,
-    :battery,
-    :acc,
-    :device_timestamp,
-    :located,
-    :latitude,
-    :latitude_mark,
-    :longitude,
-    :longitude_mark,
-    :speed,
-    :direction,
-    :altitude,
-    :satellites,
-    :gsm_signal,
-    :roll,
-    :status,
-    :lbs_stations
-  ]
-
   def get_content_type(["LK" | content], headers),
-    do: {%{headers | content_type: "LK", content: content}, Link}
+    do: %{headers | content_type: "LK", content: content}
 
   def get_content_type(["UD" | content], headers),
-    do: {%{headers | content_type: "UD", content: content}, Location}
+    do: %{headers | content_type: "UD", content: content}
 
   def get_content_type(["UD2" | content], headers),
-    do: {%{headers | content_type: "UD2", content: content}, Location}
+    do: %{headers | content_type: "UD2", content: content}
 
   def get_content_type(["AL" | content], headers),
-    do: {%{headers | content_type: "AL", content: content}, Custom}
+    do: %{headers | content_type: "AL", content: content}
 
   def get_content_type(["WAD" | content], headers),
-    do: {%{headers | content_type: "WAD", content: content}, Custom}
+    do: %{headers | content_type: "WAD", content: content}
 
   def get_content_type(["WG" | content], headers),
-    do: {%{headers | content_type: "WG", content: content}, Custom}
+    do: %{headers | content_type: "WG", content: content}
 
   def get_content_type([_ | content], headers),
-    do: {%{headers | content_type: "Unknown", content: content}, Custom}
+    do: %{headers | content_type: "Unknown", content: content}
+
+  def get_content_decoder("LK"), do: Link
+  def get_content_decoder("UD"), do: Location
+  def get_content_decoder("UD2"), do: Location
+  def get_content_decoder("AL"), do: Custom
+  def get_content_decoder("WAD"), do: Custom
+  def get_content_decoder("WG"), do: Custom
+  def get_content_decoder(_), do: Custom
+
 
   def make_response(
         %{firm: firm, device_id: device_id},

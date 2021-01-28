@@ -31,12 +31,14 @@ defmodule TkDecoder.Protocol.Location do
     |> get_roll()
     |> get_status()
     |> get_lbs_stations()
-    |> reply()
+    |> send()
   end
 
-  defp reply(data), do: {:noreply, data}
+  defp send(decoded_data), do: {:ok, decoded_data}
 
-  defp get_date_time(%Protocol{content: [date, time | content]} = data) do
+  def reply(data), do: {:noreply, data}
+
+  defp get_date_time(%{content: [date, time | content]} = data) do
     [_, day, month, year, hour, minute, second] =
       ~r/([0-9]{2})+([0-9]{2})+([0-9]{2}):([0-9]{2})+([0-9]{2})+([0-9]{2})/
       |> Regex.run("#{date}:#{time}")
@@ -58,47 +60,47 @@ defmodule TkDecoder.Protocol.Location do
     %{data | device_timestamp: DateTime.to_unix(dt), content: content}
   end
 
-  defp get_located(%Protocol{content: ["A" | content]} = data),
+  defp get_located(%{content: ["A" | content]} = data),
     do: %{data | located: true, content: content}
 
-  defp get_located(%Protocol{content: ["V" | content]} = data),
+  defp get_located(%{content: ["V" | content]} = data),
     do: %{data | located: false, content: content}
 
-  defp get_latitude(%Protocol{content: [latitude, mark | content]} = data),
+  defp get_latitude(%{content: [latitude, mark | content]} = data),
     do: %{data | latitude: latitude, latitude_mark: mark, content: content}
 
-  defp get_longitude(%Protocol{content: [longitude, mark | content]} = data),
+  defp get_longitude(%{content: [longitude, mark | content]} = data),
     do: %{data | longitude: longitude, longitude_mark: mark, content: content}
 
-  defp get_speed(%Protocol{content: [speed | content]} = data),
+  defp get_speed(%{content: [speed | content]} = data),
     do: %{data | speed: speed, content: content}
 
-  defp get_direction(%Protocol{content: [direction | content]} = data),
+  defp get_direction(%{content: [direction | content]} = data),
     do: %{data | direction: direction, content: content}
 
-  defp get_altitude(%Protocol{content: [altitude | content]} = data),
+  defp get_altitude(%{content: [altitude | content]} = data),
     do: %{data | altitude: altitude, content: content}
 
-  defp get_satellites(%Protocol{content: [satellites | content]} = data),
+  defp get_satellites(%{content: [satellites | content]} = data),
     do: %{data | satellites: satellites, content: content}
 
-  defp get_gsm_signal(%Protocol{content: [gsm_signal | content]} = data),
+  defp get_gsm_signal(%{content: [gsm_signal | content]} = data),
     do: %{data | gsm_signal: gsm_signal, content: content}
 
-  defp get_battery(%Protocol{content: [battery | content]} = data),
+  defp get_battery(%{content: [battery | content]} = data),
     do: %{data | battery: battery, content: content}
 
-  defp get_steps(%Protocol{content: [steps | content]} = data),
+  defp get_steps(%{content: [steps | content]} = data),
     do: %{data | steps: steps, content: content}
 
-  defp get_roll(%Protocol{content: [roll | content]} = data),
+  defp get_roll(%{content: [roll | content]} = data),
     do: %{data | roll: roll, content: content}
 
   # WIP v
-  defp get_status(%Protocol{content: [status | content]} = data),
+  defp get_status(%{content: [status | content]} = data),
     do: %{data | status: status, content: content}
 
-  defp get_lbs_stations(%Protocol{content: [lbs_stations | content]} = data),
+  defp get_lbs_stations(%{content: [lbs_stations | content]} = data),
     do: %{data | lbs_stations: lbs_stations, content: content}
 
   # WIP: Connect LBS station, MCC Country code, MNC Network Number, Connecting the LBS Location area code, Connect LBS code, The strength of LBS signal, Nearing LBS station 1’s location area code, ...
