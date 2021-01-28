@@ -11,21 +11,21 @@ defmodule TkDecoder.Protocol.Link do
 
   ## Examples
 
-      iex> TkDecoder.Protocol.Link.decode(%Protocol{content: [], content_type: "LK", firm: "SG", device_id: "ABCDE"})
-      {:reply, "[SG*ABCDE*0002*LK]", %Protocol{content: [], content_type: "LK", firm: "SG", device_id: "ABCDE"}}
+      iex> TkDecoder.Protocol.Link.decode(%{content: [], content_type: "LK", firm: "SG", device_id: "ABCDE"})
+      {:ok, %{content: [], content_type: "LK", firm: "SG", device_id: "ABCDE"}}
 
-      iex> TkDecoder.Protocol.Link.decode(%Protocol{content: [1, 100], content_type: "LK", firm: "SG", device_id: "ABCDE"})
-      {:reply, "[SG*ABCDE*0002*LK]", %Protocol{content: [1, 100], content_type: "LK", firm: "SG", device_id: "ABCDE", battery: 100, steps: 1}}
+      iex> TkDecoder.Protocol.Link.decode(%{content: [1, 100], content_type: "LK", firm: "SG", device_id: "ABCDE"})
+      {:ok, %{content: [1, 100], content_type: "LK", firm: "SG", device_id: "ABCDE", battery: 100, steps: 1}}
 
   """
-  def decode(%{content: [], content_type: type} = headers),
+  def decode(%{content: []} = headers),
     do: send(headers)
 
-  def decode(%{content: [steps, battery], content_type: type} = headers),
+  def decode(%{content: [steps, battery]} = headers),
     do:
       send(%{headers | steps: steps, battery: battery})
 
-  def decode(%{content: [steps, battery, acc], content_type: type} = headers),
+  def decode(%{content: [steps, battery, acc]} = headers),
     do:
        send(%{headers | steps: steps, battery: battery, acc: acc})
 
